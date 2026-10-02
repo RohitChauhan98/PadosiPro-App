@@ -1,3 +1,4 @@
+import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
 import type {
@@ -10,10 +11,19 @@ import type {
   TaskCatalogResponse,
 } from './types';
 
-// Android emulators reach the host machine via 10.0.2.2.
-export const API_URL =
-  process.env.EXPO_PUBLIC_API_URL ??
-  (Platform.OS === 'android' ? 'http://10.0.2.2:4000/api' : 'http://localhost:4000/api');
+// Dev: reuse the address Expo already put in the QR code, on the API port.
+// That follows a changing LAN/Tailscale IP. Emulator and same-machine runs
+// fall back to the usual host aliases. EXPO_PUBLIC_API_URL still overrides.
+function devApiUrl(): string {
+  const hostUri = Constants.expoConfig?.hostUri ?? Constants.platform?.hostUri;
+  const host = hostUri?.split(':')[0];
+  if (host && host !== 'localhost' && host !== '127.0.0.1') {
+    return `http://${host}:4000/api`;
+  }
+  return Platform.OS === 'android' ? 'http://10.0.2.2:4000/api' : 'http://localhost:4000/api';
+}
+
+export const API_URL = process.env.EXPO_PUBLIC_API_URL ?? devApiUrl();
 
 interface ErrorEnvelope {
   error?: {

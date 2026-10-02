@@ -42,6 +42,18 @@ export function validateBusinessName(businessName: string): string | null {
 }
 
 /**
+ * Value shown in the profile mobile field: at most 10 digits.
+ * A pasted country code (`+91` / leading `0`) is stripped when the paste is longer
+ * than a national number; anything past 10 digits is dropped.
+ */
+export function clampMobileInput(raw: string): string {
+  const digits = raw.replace(/\D/g, '');
+  if (digits.length === 12 && digits.startsWith('91')) return digits.slice(2);
+  if (digits.length === 11 && digits.startsWith('0')) return digits.slice(1);
+  return digits.slice(0, 10);
+}
+
+/**
  * Normalises Indian mobile input (`9876543210`, `919876543210`, `+919876543210`)
  * to `+91XXXXXXXXXX`. Returns null when the input cannot be a valid Indian mobile.
  */

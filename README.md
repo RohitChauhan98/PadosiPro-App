@@ -98,12 +98,12 @@ npm start          # Expo dev server
 
 Then either:
 
-- **Expo Go** (fastest): scan the QR code with the Expo Go app. The phone must reach the
-  backend — set `EXPO_PUBLIC_API_URL` to your machine's LAN IP first, e.g.
-  `EXPO_PUBLIC_API_URL=http://192.168.1.10:4000/api npm start`.
-- **Android emulator**: `npm run android`. No env var needed — the app defaults to
-  `http://10.0.2.2:4000/api` on Android emulators, which maps to the host's `localhost:4000`.
-  (On any other platform it defaults to `http://localhost:4000/api`.)
+- **Expo Go** (fastest): scan the QR code with the Expo Go app. The app calls the API on
+  the same computer address Expo used for that QR code, port 4000, so a changing IP does
+  not need to be pasted. Set `EXPO_PUBLIC_API_URL` only to override that.
+- **Android emulator**: `npm run android`. With no dev-server address, the app uses
+  `http://10.0.2.2:4000/api`, which maps to the host's `localhost:4000`.
+  (On any other platform that fallback is `http://localhost:4000/api`.)
 
 Flow to try: register → grab the OTP from Mailpit (http://localhost:8025) → verify → login →
 first-login profile (name, +91 mobile, address, optional business name) → pick tasks → home.

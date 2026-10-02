@@ -9,7 +9,7 @@
 │  TanStack Query,   │ ◀─────────────────────────── │  envelope {error:{code,…}}  │
 │  SecureStore (JWT) │                              │  ├─ modules/auth (register, │
 └────────────────────┘                              │  │  verify-otp, resend, login)│
-        10.0.2.2:4000 on Android emulator           │  ├─ modules/profile (upsert, │
+        phone: QR host :4000; else 10.0.2.2        │  ├─ modules/profile (upsert, │
                                                     │  │  +91 mobile normalisation) │
                                                     │  └─ modules/tasks (catalogue, │
                                                     │     per-user selection)      │

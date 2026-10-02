@@ -9,16 +9,16 @@ import * as api from './api';
 import { useAuth } from './auth';
 import type { MyTasksResponse, Profile, ProfileInput } from './types';
 
-function useToken(): string {
-  const { token } = useAuth();
-  if (!token) throw new Error('This query requires a signed-in user.');
-  return token;
+function useSession(): { token: string; userId: string } {
+  const { token, user } = useAuth();
+  if (!token || !user) throw new Error('This query requires a signed-in user.');
+  return { token, userId: user.id };
 }
 
 export function useProfile() {
-  const token = useToken();
+  const { token, userId } = useSession();
   return useQuery<Profile | null, api.ApiError>({
-    queryKey: ['profile'],
+    queryKey: ['profile', userId],
     queryFn: () => api.getProfile(token),
     retry: (failureCount, error) =>
       error.code !== 'UNAUTHORIZED' && error.code !== 'NETWORK_ERROR' && failureCount < 2,
@@ -29,20 +29,20 @@ export function useProfile() {
 export function useSaveProfile(
   options?: UseMutationOptions<Profile, api.ApiError, ProfileInput>,
 ) {
-  const token = useToken();
+  const { token, userId } = useSession();
   const queryClient = useQueryClient();
   return useMutation<Profile, api.ApiError, ProfileInput>({
     ...options,
     mutationFn: (input) => api.saveProfile(token, input),
     onSuccess: (profile, variables, onMutateResult, context) => {
-      queryClient.setQueryData(['profile'], profile);
+      queryClient.setQueryData(['profile', userId], profile);
       options?.onSuccess?.(profile, variables, onMutateResult, context);
     },
   });
 }
 
 export function useTaskCatalog() {
-  const token = useToken();
+  const { token } = useSession();
   return useQuery({
     queryKey: ['tasks', 'catalog'],
     queryFn: () => api.getTaskCatalog(token),
@@ -51,9 +51,9 @@ export function useTaskCatalog() {
 }
 
 export function useMyTasks() {
-  const token = useToken();
+  const { token, userId } = useSession();
   return useQuery<MyTasksResponse, api.ApiError>({
-    queryKey: ['tasks', 'mine'],
+    queryKey: ['tasks', 'mine', userId],
     queryFn: () => api.getMyTasks(token),
   });
 }
@@ -61,13 +61,13 @@ export function useMyTasks() {
 export function useSaveMyTasks(
   options?: UseMutationOptions<MyTasksResponse, api.ApiError, string[]>,
 ) {
-  const token = useToken();
+  const { token, userId } = useSession();
   const queryClient = useQueryClient();
   return useMutation<MyTasksResponse, api.ApiError, string[]>({
     ...options,
     mutationFn: (taskIds) => api.saveMyTasks(token, taskIds),
     onSuccess: (data, variables, onMutateResult, context) => {
-      queryClient.setQueryData(['tasks', 'mine'], data);
+      queryClient.setQueryData(['tasks', 'mine', userId], data);
       options?.onSuccess?.(data, variables, onMutateResult, context);
     },
   });

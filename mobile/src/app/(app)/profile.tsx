@@ -21,6 +21,7 @@ import { confirmDialog } from '@/lib/confirm';
 import { useProfile, useSaveProfile } from '@/lib/queries';
 import type { Profile } from '@/lib/types';
 import {
+  clampMobileInput,
   normalizeIndianMobile,
   validateAddress,
   validateBusinessName,
@@ -67,7 +68,13 @@ export default function ProfileScreen() {
     );
   }
 
-  return <ProfileForm isFirstLogin={isFirstLogin} initial={profileQuery.data ?? null} />;
+  return (
+    <ProfileForm
+      key={user?.id}
+      isFirstLogin={isFirstLogin}
+      initial={profileQuery.data ?? null}
+    />
+  );
 }
 
 function ProfileForm({
@@ -85,8 +92,9 @@ function ProfileForm({
   // route guard can evaluate with the stale user and bounce us back here.
   const savedRef = useRef(false);
 
+  const initialMobile = clampMobileInput(initial?.mobileNumber ?? '');
   const [name, setName] = useState(initial?.name ?? '');
-  const [mobile, setMobile] = useState(initial?.mobileNumber ?? '');
+  const [mobile, setMobile] = useState(initialMobile);
   const [address, setAddress] = useState(initial?.address ?? '');
   const [businessName, setBusinessName] = useState(initial?.businessName ?? '');
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -94,7 +102,7 @@ function ProfileForm({
 
   const isDirty =
     name !== (initial?.name ?? '') ||
-    mobile !== (initial?.mobileNumber ?? '') ||
+    mobile !== initialMobile ||
     address !== (initial?.address ?? '') ||
     businessName !== (initial?.businessName ?? '');
 
@@ -235,7 +243,7 @@ function ProfileForm({
           label="Mobile number"
           value={mobile}
           onChangeText={(text) => {
-            setMobile(text);
+            setMobile(clampMobileInput(text));
             setErrors((prev) => ({ ...prev, mobile: null }));
           }}
           onBlur={() =>
@@ -244,8 +252,10 @@ function ProfileForm({
           error={errors.mobile}
           hint="10-digit Indian mobile — we save it as +91 XXXXX XXXXX."
           placeholder="98765 43210"
-          keyboardType="phone-pad"
+          keyboardType="number-pad"
           autoComplete="tel"
+          maxLength={10}
+          inputMode="numeric"
         />
         <TextField
           label="Address"

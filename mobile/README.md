@@ -29,8 +29,9 @@ has loading, empty and error-with-retry states.
 
 ## API client
 
-`src/lib/api.ts` — base URL from `EXPO_PUBLIC_API_URL`, defaulting to
-`http://10.0.2.2:4000/api` on Android emulators and `http://localhost:4000/api` elsewhere.
+`src/lib/api.ts` — base URL from `EXPO_PUBLIC_API_URL` when set. Otherwise it uses the
+dev-server host from the QR code on port 4000, then `http://10.0.2.2:4000/api` on Android
+and `http://localhost:4000/api` elsewhere.
 The contract error envelope (`error.code` / `message` / `details` / `attemptsRemaining` /
 `retryAfterSeconds`) is parsed into a typed `ApiError`; unreachable hosts surface as a friendly
 `NETWORK_ERROR`.

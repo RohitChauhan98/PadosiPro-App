@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import {
   createContext,
   useCallback,
@@ -26,6 +27,7 @@ type AuthContextValue = AuthState & {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const queryClient = useQueryClient();
   const [state, setState] = useState<AuthState>({ status: 'loading', token: null, user: null });
 
   useEffect(() => {
@@ -45,8 +47,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = useCallback(async () => {
     await clearSession();
+    // Profile and task queries are cached for the whole app session. Drop them
+    // before the next account mounts, or its screens read the previous user's data.
+    queryClient.clear();
     setState({ status: 'signedOut', token: null, user: null });
-  }, []);
+  }, [queryClient]);
 
   // A 401 on any authenticated call (expired/invalid JWT) drops the session.
   useEffect(() => {
