@@ -131,8 +131,8 @@ cd android && ./gradlew assembleRelease
 ```
 
 Requires JDK 21 and the Android SDK packages listed under Prerequisites
-(`ANDROID_HOME` set). A pre-built signed release APK (`padosipro-release.apk`, ~59 MB,
-SHA-256 `d667a884…4cdb`) is included with this submission; rebuild from source with the
+(`ANDROID_HOME` set). A pre-built signed release APK (`padosipro-release.apk`, ~102 MB,
+SHA-256 `a3b694f65786bd80b219b03a764784ca051fa75ee9f1416c7191d3683966e9e1`) is included with this submission; rebuild from source with the
 steps above if you prefer.
 
 ## Repo layout
