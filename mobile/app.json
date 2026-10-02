@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "PadosiPro",
+    "slug": "padosipro",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "padosipro",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "bundleIdentifier": "com.padosipro.app",
+      "icon": "./assets/images/icon.png"
+    },
+    "android": {
+      "package": "com.padosipro.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#1B2F2F",
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#1B2F2F",
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 76
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}

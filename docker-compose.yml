@@ -1,0 +1,38 @@
+services:
+  api:
+    build: ./backend
+    ports:
+      - "4000:4000"
+    environment:
+      PORT: "4000"
+      DATABASE_URL: "file:/app/data/padosipro.db"
+      JWT_SECRET: "dev-only-secret-change-me"
+      JWT_EXPIRES_IN: "24h"
+      OTP_PEPPER: "dev-only-pepper-change-me"
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+      SMTP_FROM: "PadosiPro <no-reply@padosipro.local>"
+    volumes:
+      - api-data:/app/data
+    depends_on:
+      - mailpit
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:4000/api/health').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 20s
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Web UI + HTTP API
+    healthcheck:
+      test: ["CMD", "/mailpit", "readyz"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  api-data:

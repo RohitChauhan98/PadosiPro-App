@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Builds
+dist/
+*.tsbuildinfo
+
+# Local databases (SQLite)
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Env files (never commit real secrets)
+.env
+!.env.example
+
+# Test / coverage output
+coverage/
+
+# OS / editor noise
+.DS_Store
+*.log
+
+
+# Agent working notes (not part of the submission)
+docs/
